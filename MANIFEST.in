@@ -1,0 +1,7 @@
+include requirements/*.txt
+include mmvsr/.mim/VERSION
+include mmvsr/.mim/model-index.yml
+include mmvsr/evaluation/metrics/niqe_pris_params.npz
+recursive-include mmvsr/.mim/configs *.py *.yml
+recursive-include mmvsr/.mim/tools *.sh *.py
+recursive-include mmvsr/.mim/demo *.py

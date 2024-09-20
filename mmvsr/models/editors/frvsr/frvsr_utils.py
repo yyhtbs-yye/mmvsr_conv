@@ -1,0 +1,112 @@
+def backward_warp(x, flow, mode='bilinear', padding_mode='border'):
+
+    n, c, h, w = x.size()
+
+    # create mesh grid
+    iu = torch.linspace(-1.0, 1.0, w).view(1, 1, 1, w).expand(n, -1, h, -1)
+    iv = torch.linspace(-1.0, 1.0, h).view(1, 1, h, 1).expand(n, -1, -1, w)
+    grid = torch.cat([iu, iv], 1).to(flow.device)
+
+    # normalize flow to [-1, 1]
+    flow = torch.cat([
+        flow[:, 0:1, ...] / ((w - 1.0) / 2.0),
+        flow[:, 1:2, ...] / ((h - 1.0) / 2.0)], dim=1)
+
+    # add flow to grid and reshape to nhw2
+    grid = (grid + flow).permute(0, 2, 3, 1)
+
+    # bilinear sampling
+    # Note: `align_corners` is set to `True` by default for PyTorch version < 1.4.0
+    if int(''.join(torch.__version__.split('.')[:2])) >= 14:
+        output = F.grid_sample(
+            x, grid, mode=mode, padding_mode=padding_mode, align_corners=True)
+    else:
+        output = F.grid_sample(x, grid, mode=mode, padding_mode=padding_mode)
+
+    return output
+
+def space_to_depth(x, scale):
+    """ Equivalent to tf.space_to_depth()
+    """
+
+    n, c, in_h, in_w = x.size()
+    out_h, out_w = in_h // scale, in_w // scale
+
+    x_reshaped = x.reshape(n, c, out_h, scale, out_w, scale)
+    x_reshaped = x_reshaped.permute(0, 3, 5, 1, 2, 4)
+    output = x_reshaped.reshape(n, scale * scale * c, out_h, out_w)
+
+    return output
+
+def get_upsampling_func(scale=4, degradation='BI'):
+    if degradation == 'BI':
+        upsample_func = functools.partial(
+            F.interpolate, scale_factor=scale, mode='bilinear',
+            align_corners=False)
+
+    elif degradation == 'BD':
+        upsample_func = BicubicUpsampler(scale_factor=scale)
+
+    else:
+        raise ValueError(f'Unrecognized degradation type: {degradation}')
+
+    return upsample_func
+
+
+# --------------------- utility classes --------------------- #
+class BicubicUpsampler(nn.Module):
+    """ Bicubic upsampling function with similar behavior to that in TecoGAN-Tensorflow
+
+        Note:
+            This function is different from torch.nn.functional.interpolate and matlab's imresize
+            in terms of the bicubic kernel and the sampling strategy
+
+        References:
+            http://verona.fi-p.unam.mx/boris/practicas/CubConvInterp.pdf
+            https://stackoverflow.com/questions/26823140/imresize-trying-to-understand-the-bicubic-interpolation
+    """
+
+    def __init__(self, scale_factor, a=-0.75):
+        super(BicubicUpsampler, self).__init__()
+
+        # calculate weights (according to Eq.(6) in the reference paper)
+        cubic = torch.FloatTensor([
+            [0, a, -2*a, a],
+            [1, 0, -(a + 3), a + 2],
+            [0, -a, (2*a + 3), -(a + 2)],
+            [0, 0, a, -a]
+        ])
+
+        kernels = [
+            torch.matmul(cubic, torch.FloatTensor([1, s, s**2, s**3]))
+            for s in [1.0*d/scale_factor for d in range(scale_factor)]
+        ]  # s = x - floor(x)
+
+        # register parameters
+        self.scale_factor = scale_factor
+        self.register_buffer('kernels', torch.stack(kernels))  # size: (f, 4)
+
+    def forward(self, input):
+        n, c, h, w = input.size()
+        f = self.scale_factor
+
+        # merge n&c
+        input = input.reshape(n*c, 1, h, w)
+
+        # pad input (left, right, top, bottom)
+        input = F.pad(input, (1, 2, 1, 2), mode='replicate')
+
+        # calculate output (vertical expansion)
+        kernel_h = self.kernels.view(f, 1, 4, 1)
+        output = F.conv2d(input, kernel_h, stride=1, padding=0)
+        output = output.permute(0, 2, 1, 3).reshape(n*c, 1, f*h, w + 3)
+
+        # calculate output (horizontal expansion)
+        kernel_w = self.kernels.view(f, 1, 1, 4)
+        output = F.conv2d(output, kernel_w, stride=1, padding=0)
+        output = output.permute(0, 2, 3, 1).reshape(n*c, 1, f*h, f*w)
+
+        # split n&c
+        output = output.reshape(n, c, f*h, f*w)
+
+        return output

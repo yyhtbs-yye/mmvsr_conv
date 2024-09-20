@@ -1,0 +1,499 @@
+08/16 17:00:06 - mmengine - INFO - 
+------------------------------------------------------------
+System environment:
+    sys.platform: linux
+    Python: 3.10.13 (main, Sep 11 2023, 13:44:35) [GCC 11.2.0]
+    CUDA available: True
+    MUSA available: False
+    numpy_random_seed: 1206560408
+    GPU 0: Tesla T4
+    CUDA_HOME: /usr/local/cuda
+    NVCC: Cuda compilation tools, release 12.1, V12.1.105
+    GCC: gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0
+    PyTorch: 2.1.1
+    PyTorch compiling details: PyTorch built with:
+  - GCC 9.3
+  - C++ Version: 201703
+  - Intel(R) oneAPI Math Kernel Library Version 2023.1-Product Build 20230303 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v3.1.1 (Git Hash 64f6bcbcbab628e96f33a62c3e975f8535a7bde4)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - LAPACK is enabled (usually provided by MKL)
+  - NNPACK is enabled
+  - CPU capability usage: AVX512
+  - CUDA Runtime 12.1
+  - NVCC architecture flags: -gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_61,code=sm_61;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_86,code=sm_86;-gencode;arch=compute_90,code=sm_90
+  - CuDNN 8.9.2
+  - Magma 2.6.1
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=12.1, CUDNN_VERSION=8.9.2, CXX_COMPILER=/opt/rh/devtoolset-9/root/usr/bin/c++, CXX_FLAGS= -D_GLIBCXX_USE_CXX11_ABI=0 -fabi-version=11 -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -DNDEBUG -DUSE_KINETO -DLIBKINETO_NOROCTRACER -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -O2 -fPIC -Wall -Wextra -Werror=return-type -Werror=non-virtual-dtor -Werror=bool-operation -Wnarrowing -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wno-unused-parameter -Wno-unused-function -Wno-unused-result -Wno-strict-overflow -Wno-strict-aliasing -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=old-style-cast -Wno-invalid-partial-specialization -Wno-unused-private-field -Wno-aligned-allocation-unavailable -Wno-missing-braces -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Werror=cast-function-type -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_DISABLE_GPU_ASSERTS=ON, TORCH_VERSION=2.1.1, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=ON, USE_NNPACK=ON, USE_OPENMP=ON, USE_ROCM=OFF, 
+
+    TorchVision: 0.16.1
+    OpenCV: 4.9.0
+    MMEngine: 0.10.4
+
+Runtime environment:
+    cudnn_benchmark: False
+    mp_cfg: {'mp_start_method': 'fork', 'opencv_num_threads': 4}
+    dist_cfg: {'backend': 'nccl'}
+    seed: 1206560408
+    Distributed launcher: none
+    Distributed training: False
+    GPU number: 1
+------------------------------------------------------------
+
+08/16 17:00:06 - mmengine - INFO - Config:
+batch_size = 1
+custom_hooks = [
+    dict(interval=1, type='BasicVisualizationHook'),
+]
+default_hooks = dict(
+    checkpoint=dict(
+        by_epoch=False,
+        interval=1000,
+        max_keep_ckpts=10,
+        out_dir='./work_dirs',
+        rule='greater',
+        save_best='PSNR',
+        save_optimizer=True,
+        type='CheckpointHook'),
+    logger=dict(interval=100, type='LoggerHook'),
+    param_scheduler=dict(type='ParamSchedulerHook'),
+    sampler_seed=dict(type='DistSamplerSeedHook'),
+    timer=dict(type='IterTimerHook'))
+default_scope = 'mmvsr'
+env_cfg = dict(
+    cudnn_benchmark=False,
+    dist_cfg=dict(backend='nccl'),
+    mp_cfg=dict(mp_start_method='fork', opencv_num_threads=4))
+gt_patch_size = 256
+load_from = None
+log_level = 'INFO'
+log_processor = dict(by_epoch=False, type='LogProcessor', window_size=100)
+loss_name = 'CharbonnierLoss'
+model = dict(
+    data_preprocessor=dict(
+        mean=[
+            0.0,
+            0.0,
+            0.0,
+        ],
+        std=[
+            255.0,
+            255.0,
+            255.0,
+        ],
+        type='DataPreprocessor'),
+    generator=dict(
+        mid_channels=16,
+        num_blocks=30,
+        spynet_pretrained=
+        'https://download.openmmlab.com/mmediting/restorers/basicvsr/spynet_20210409-c6c1bd09.pth',
+        type='BasicVSRImpl'),
+    pixel_loss=dict(loss_weight=1.0, reduction='mean', type='CharbonnierLoss'),
+    train_cfg=dict(fix_iter=5000),
+    type='BasicVSR')
+model_configs = dict(mid_channels=64, num_blocks=7)
+model_name = 'BasicVSRNet'
+num_input_frames = 7
+num_workers = 15
+optim_wrapper = dict(
+    constructor='DefaultOptimWrapperConstructor',
+    optimizer=dict(betas=(
+        0.9,
+        0.99,
+    ), lr=0.0002, type='Adam'),
+    paramwise_cfg=dict(custom_keys=dict(spynet=dict(lr_mult=0.125))),
+    type='OptimWrapper')
+param_scheduler = dict(
+    by_epoch=False,
+    eta_min=1e-07,
+    periods=[
+        300000,
+    ],
+    restart_weights=[
+        1,
+    ],
+    type='CosineRestartLR')
+paramwise_cfg = dict(custom_keys=dict(spynet=dict(lr_mult=0.125)))
+reds_root = './data/REDS'
+resume = False
+save_dir = './work_dirs'
+scale = 4
+train_cfg = dict(
+    max_iters=300000, type='IterBasedTrainLoop', val_interval=1000)
+train_dataloader = dict(
+    batch_size=1,
+    dataset=dict(
+        ann_file='meta_info_reds4_train.txt',
+        data_prefix=dict(gt='train_sharp', img='train_sharp_bicubic/X4'),
+        data_root='./data/REDS',
+        depth=1,
+        metainfo=dict(dataset_type='reds_reds4', task_name='vsr'),
+        num_input_frames=7,
+        pipeline=[
+            dict(interval_list=[
+                1,
+            ], type='GenerateSegmentIndices'),
+            dict(channel_order='rgb', key='img', type='LoadImageFromFile'),
+            dict(channel_order='rgb', key='gt', type='LoadImageFromFile'),
+            dict(dictionary=dict(scale=4), type='SetValues'),
+            dict(
+                direction='horizontal',
+                flip_ratio=0.5,
+                keys=[
+                    'img',
+                    'gt',
+                ],
+                type='Flip'),
+            dict(
+                direction='vertical',
+                flip_ratio=0.5,
+                keys=[
+                    'img',
+                    'gt',
+                ],
+                type='Flip'),
+            dict(type='PackInputs'),
+        ],
+        type='BasicFramesDataset'),
+    num_workers=15,
+    persistent_workers=False,
+    sampler=dict(shuffle=True, type='InfiniteSampler'))
+train_iter = 300000
+train_on_patch = False
+train_pipeline = [
+    dict(interval_list=[
+        1,
+    ], type='GenerateSegmentIndices'),
+    dict(channel_order='rgb', key='img', type='LoadImageFromFile'),
+    dict(channel_order='rgb', key='gt', type='LoadImageFromFile'),
+    dict(dictionary=dict(scale=4), type='SetValues'),
+    dict(
+        direction='horizontal',
+        flip_ratio=0.5,
+        keys=[
+            'img',
+            'gt',
+        ],
+        type='Flip'),
+    dict(
+        direction='vertical',
+        flip_ratio=0.5,
+        keys=[
+            'img',
+            'gt',
+        ],
+        type='Flip'),
+    dict(type='PackInputs'),
+]
+val_cfg = dict(type='MultiValLoop')
+val_dataloader = dict(
+    batch_size=1,
+    dataset=dict(
+        ann_file='meta_info_reds4_val.txt',
+        data_prefix=dict(gt='train_sharp', img='train_sharp_bicubic/X4'),
+        data_root='./data/REDS',
+        depth=1,
+        metainfo=dict(dataset_type='reds_reds4', task_name='vsr'),
+        num_input_frames=7,
+        pipeline=[
+            dict(interval_list=[
+                1,
+            ], type='GenerateSegmentIndices'),
+            dict(channel_order='rgb', key='img', type='LoadImageFromFile'),
+            dict(channel_order='rgb', key='gt', type='LoadImageFromFile'),
+            dict(dictionary=dict(scale=4), type='SetValues'),
+            dict(type='PackInputs'),
+        ],
+        type='BasicFramesDataset'),
+    num_workers=15,
+    persistent_workers=False,
+    sampler=dict(shuffle=False, type='DefaultSampler'))
+val_evaluator = dict(
+    metrics=[
+        dict(type='PSNR'),
+        dict(type='SSIM'),
+    ], type='Evaluator')
+val_interval = 1000
+val_pipeline = [
+    dict(interval_list=[
+        1,
+    ], type='GenerateSegmentIndices'),
+    dict(channel_order='rgb', key='img', type='LoadImageFromFile'),
+    dict(channel_order='rgb', key='gt', type='LoadImageFromFile'),
+    dict(dictionary=dict(scale=4), type='SetValues'),
+    dict(type='PackInputs'),
+]
+vis_backends = [
+    dict(type='LocalVisBackend'),
+]
+visualizer = dict(
+    bgr2rgb=True,
+    fn_key='gt_path',
+    img_keys=[
+        'gt_img',
+        'input',
+        'pred_img',
+    ],
+    type='ConcatImageVisualizer',
+    vis_backends=[
+        dict(type='LocalVisBackend'),
+    ])
+work_dir = './work_dirs/BlsasicVSRPlusPlusNet'
+
+Using /root/.cache/torch_extensions/py310_cu121 as PyTorch extensions root...
+Detected CUDA files, patching ldflags
+Emitting ninja build file /root/.cache/torch_extensions/py310_cu121/D3D/build.ninja...
+Building extension module D3D...
+Allowing ninja to set a default number of workers... (overridable by setting the environment variable MAX_JOBS=N)
+ninja: no work to do.
+Loading extension module D3D...
+08/16 17:00:07 - mmengine - INFO - Loads checkpoint by http backend from path: https://download.openmmlab.com/mmediting/restorers/basicvsr/spynet_20210409-c6c1bd09.pth
+08/16 17:00:07 - mmengine - INFO - Distributed training is not used, all SyncBatchNorm (SyncBN) layers in the model will be automatically reverted to BatchNormXd layers if they are used.
+08/16 17:00:07 - mmengine - INFO - Hooks will be executed in the following order:
+before_run:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+before_train:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_train_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) DistSamplerSeedHook                
+ -------------------- 
+before_train_iter:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_train_iter:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) BasicVisualizationHook             
+(BELOW_NORMAL) LoggerHook                         
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+after_train_epoch:
+(NORMAL      ) IterTimerHook                      
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_val:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+before_val_epoch:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+before_val_iter:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_val_iter:
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) BasicVisualizationHook             
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_val_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+after_val:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+after_train:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_test:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+before_test_epoch:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+before_test_iter:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_test_iter:
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) BasicVisualizationHook             
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_test_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_test:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+after_run:
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+08/16 17:00:08 - mmengine - WARNING - reds_reds4 is not a meta file, simply parsed as meta information
+08/16 17:00:08 - mmengine - WARNING - vsr is not a meta file, simply parsed as meta information
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.0.basic_module.0.conv.weight:lr=2.5e-05
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.0.basic_module.0.conv.weight:lr_mult=0.125
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.0.basic_module.0.conv.bias:lr=2.5e-05
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.0.basic_module.0.conv.bias:lr_mult=0.125
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.0.basic_module.1.conv.weight:lr=2.5e-05
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.0.basic_module.1.conv.weight:lr_mult=0.125
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.0.basic_module.1.conv.bias:lr=2.5e-05
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.0.basic_module.1.conv.bias:lr_mult=0.125
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.0.basic_module.2.conv.weight:lr=2.5e-05
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.0.basic_module.2.conv.weight:lr_mult=0.125
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.0.basic_module.2.conv.bias:lr=2.5e-05
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.0.basic_module.2.conv.bias:lr_mult=0.125
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.0.basic_module.3.conv.weight:lr=2.5e-05
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.0.basic_module.3.conv.weight:lr_mult=0.125
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.0.basic_module.3.conv.bias:lr=2.5e-05
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.0.basic_module.3.conv.bias:lr_mult=0.125
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.0.basic_module.4.conv.weight:lr=2.5e-05
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.0.basic_module.4.conv.weight:lr_mult=0.125
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.0.basic_module.4.conv.bias:lr=2.5e-05
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.0.basic_module.4.conv.bias:lr_mult=0.125
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.1.basic_module.0.conv.weight:lr=2.5e-05
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.1.basic_module.0.conv.weight:lr_mult=0.125
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.1.basic_module.0.conv.bias:lr=2.5e-05
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.1.basic_module.0.conv.bias:lr_mult=0.125
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.1.basic_module.1.conv.weight:lr=2.5e-05
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.1.basic_module.1.conv.weight:lr_mult=0.125
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.1.basic_module.1.conv.bias:lr=2.5e-05
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.1.basic_module.1.conv.bias:lr_mult=0.125
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.1.basic_module.2.conv.weight:lr=2.5e-05
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.1.basic_module.2.conv.weight:lr_mult=0.125
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.1.basic_module.2.conv.bias:lr=2.5e-05
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.1.basic_module.2.conv.bias:lr_mult=0.125
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.1.basic_module.3.conv.weight:lr=2.5e-05
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.1.basic_module.3.conv.weight:lr_mult=0.125
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.1.basic_module.3.conv.bias:lr=2.5e-05
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.1.basic_module.3.conv.bias:lr_mult=0.125
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.1.basic_module.4.conv.weight:lr=2.5e-05
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.1.basic_module.4.conv.weight:lr_mult=0.125
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.1.basic_module.4.conv.bias:lr=2.5e-05
+08/16 17:00:09 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.1.basic_module.4.conv.bias:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.2.basic_module.0.conv.weight:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.2.basic_module.0.conv.weight:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.2.basic_module.0.conv.bias:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.2.basic_module.0.conv.bias:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.2.basic_module.1.conv.weight:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.2.basic_module.1.conv.weight:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.2.basic_module.1.conv.bias:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.2.basic_module.1.conv.bias:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.2.basic_module.2.conv.weight:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.2.basic_module.2.conv.weight:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.2.basic_module.2.conv.bias:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.2.basic_module.2.conv.bias:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.2.basic_module.3.conv.weight:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.2.basic_module.3.conv.weight:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.2.basic_module.3.conv.bias:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.2.basic_module.3.conv.bias:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.2.basic_module.4.conv.weight:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.2.basic_module.4.conv.weight:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.2.basic_module.4.conv.bias:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.2.basic_module.4.conv.bias:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.3.basic_module.0.conv.weight:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.3.basic_module.0.conv.weight:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.3.basic_module.0.conv.bias:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.3.basic_module.0.conv.bias:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.3.basic_module.1.conv.weight:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.3.basic_module.1.conv.weight:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.3.basic_module.1.conv.bias:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.3.basic_module.1.conv.bias:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.3.basic_module.2.conv.weight:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.3.basic_module.2.conv.weight:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.3.basic_module.2.conv.bias:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.3.basic_module.2.conv.bias:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.3.basic_module.3.conv.weight:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.3.basic_module.3.conv.weight:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.3.basic_module.3.conv.bias:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.3.basic_module.3.conv.bias:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.3.basic_module.4.conv.weight:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.3.basic_module.4.conv.weight:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.3.basic_module.4.conv.bias:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.3.basic_module.4.conv.bias:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.4.basic_module.0.conv.weight:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.4.basic_module.0.conv.weight:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.4.basic_module.0.conv.bias:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.4.basic_module.0.conv.bias:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.4.basic_module.1.conv.weight:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.4.basic_module.1.conv.weight:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.4.basic_module.1.conv.bias:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.4.basic_module.1.conv.bias:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.4.basic_module.2.conv.weight:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.4.basic_module.2.conv.weight:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.4.basic_module.2.conv.bias:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.4.basic_module.2.conv.bias:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.4.basic_module.3.conv.weight:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.4.basic_module.3.conv.weight:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.4.basic_module.3.conv.bias:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.4.basic_module.3.conv.bias:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.4.basic_module.4.conv.weight:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.4.basic_module.4.conv.weight:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.4.basic_module.4.conv.bias:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.4.basic_module.4.conv.bias:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.5.basic_module.0.conv.weight:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.5.basic_module.0.conv.weight:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.5.basic_module.0.conv.bias:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.5.basic_module.0.conv.bias:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.5.basic_module.1.conv.weight:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.5.basic_module.1.conv.weight:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.5.basic_module.1.conv.bias:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.5.basic_module.1.conv.bias:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.5.basic_module.2.conv.weight:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.5.basic_module.2.conv.weight:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.5.basic_module.2.conv.bias:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.5.basic_module.2.conv.bias:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.5.basic_module.3.conv.weight:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.5.basic_module.3.conv.weight:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.5.basic_module.3.conv.bias:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.5.basic_module.3.conv.bias:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.5.basic_module.4.conv.weight:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.5.basic_module.4.conv.weight:lr_mult=0.125
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.5.basic_module.4.conv.bias:lr=2.5e-05
+08/16 17:00:10 - mmengine - INFO - paramwise_options -- generator.spynet.basic_module.5.basic_module.4.conv.bias:lr_mult=0.125
+08/16 17:00:10 - mmengine - WARNING - The prefix is not set in metric class PSNR.
+08/16 17:00:10 - mmengine - WARNING - The prefix is not set in metric class SSIM.
+08/16 17:00:10 - mmengine - WARNING - "FileClient" will be deprecated in future. Please use io functions in https://mmengine.readthedocs.io/en/latest/api/fileio.html#file-io
+08/16 17:00:10 - mmengine - WARNING - "HardDiskBackend" is the alias of "LocalBackend" and the former will be deprecated in future.
+08/16 17:00:10 - mmengine - INFO - Checkpoints will be saved to ./work_dirs/BlsasicVSRPlusPlusNet.
+Traceback (most recent call last):
+  File "/workspace/mmvsr/runners/run_scipt.py", line 27, in <module>
+    runner.train()
+  File "/opt/conda/lib/python3.10/site-packages/mmengine/runner/runner.py", line 1777, in train
+    model = self.train_loop.run()  # type: ignore
+  File "/opt/conda/lib/python3.10/site-packages/mmengine/runner/loops.py", line 287, in run
+    self.run_iter(data_batch)
+  File "/opt/conda/lib/python3.10/site-packages/mmengine/runner/loops.py", line 311, in run_iter
+    outputs = self.runner.model.train_step(
+  File "/opt/conda/lib/python3.10/site-packages/mmengine/model/base_model/base_model.py", line 114, in train_step
+    losses = self._run_forward(data, mode='loss')  # type: ignore
+  File "/opt/conda/lib/python3.10/site-packages/mmengine/model/base_model/base_model.py", line 361, in _run_forward
+    results = self(**data, mode=mode)
+  File "/opt/conda/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/workspace/mmvsr/mmvsr/models/base_models/base_edit_model.py", line 119, in forward
+    return self.forward_train(inputs, data_samples, **kwargs)
+  File "/workspace/mmvsr/mmvsr/models/editors/basicvsr/basicvsr.py", line 109, in forward_train
+    feats = self.forward_tensor(inputs, data_samples, **kwargs)
+  File "/workspace/mmvsr/mmvsr/models/base_models/base_edit_model.py", line 167, in forward_tensor
+    feats = self.generator(inputs, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/workspace/mmvsr/mmvsr/models/_salutor/basicvsr_impl.py", line 62, in forward
+    backward_feats = self.back_propagator(feats_, backward_flows, 
+  File "/opt/conda/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/opt/conda/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/workspace/mmvsr/mmvsr/models/_temporal_propagator/first_order_recurrent.py", line 58, in forward
+    flow = flows[:, indices[i - 1], :, :, :]
+IndexError: index 6 is out of bounds for dimension 1 with size 6
